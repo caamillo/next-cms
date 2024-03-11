@@ -54,7 +54,7 @@ export default function Panel({ directories }) {
       <div className="w-[20%] min-w-[300px] p-5 bg-slate-100 border-r">
         <div className='flex flex-col h-full justify-between'>
           <div>
-            <p className='text-2xl font-semibold mb-5 text-gray-800 capitalize'>{ dirName }:</p>
+            <p className='text-2xl font-semibold mb-5 text-slate-800 capitalize'>{ dirName }:</p>
             <div className='space-y-2'>
               {Object.keys(scopeDirs).filter(el => el !== '_back').map((directory, c) => (
                 <Accordion
@@ -71,7 +71,7 @@ export default function Panel({ directories }) {
           <div>
             {
               !!scopeDirs?._back &&
-                <button onClick={ handleBack } className="text-lg px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-gray-800 w-full capitalize transition-colors duration-200 ease-in-out">
+                <button onClick={ handleBack } className="text-lg px-4 py-2 bg-slate-300 hover:bg-slate-400 rounded-md text-slate-800 w-full capitalize transition-colors duration-200 ease-in-out">
                   Back
                 </button>
             }

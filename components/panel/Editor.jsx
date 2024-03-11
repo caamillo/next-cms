@@ -38,7 +38,7 @@ export default function Editor({ directory, files, onContentChange }) {
         { !!content && Object.keys(files).map((lang) => (
             <button
                 key={ `btn-${ lang }` }
-                className={`px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm text-sm font-medium focus:outline-none ${lang === selectedLang ? 'bg-indigo-600 text-white' : 'bg-white text-gray-800 hover:bg-gray-50'}`}
+                className={`px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm text-sm font-medium focus:outline-none ${lang === selectedLang ? 'bg-indigo-600 text-white' : 'bg-white text-slate-800 hover:bg-slate-200'}`}
                 onClick={ () => setSelectedLang(lang) }
             >
             { settings.flags[lang.replace('.json', '')] }
