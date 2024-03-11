@@ -35,7 +35,7 @@ export default function Editor({ directory, files, onContentChange }) {
   return (
     <div className='space-y-5'>
       <div className='flex gap-3'>
-        {Object.keys(files).map((lang) => (
+        { !!content && Object.keys(files).map((lang) => (
             <button
                 key={ `btn-${ lang }` }
                 className={`px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm text-sm font-medium focus:outline-none ${lang === selectedLang ? 'bg-indigo-600 text-white' : 'bg-white text-gray-800 hover:bg-gray-50'}`}
@@ -45,20 +45,29 @@ export default function Editor({ directory, files, onContentChange }) {
         </button>
         ))}
       </div>
-      <div className=''>
+      <div className='w-full h-full'>
         {
-          Object.entries(content).map(([key, value], c) =>
-            <InputGroup
-              label={ key }
-              data={ value }
-              key={ `igp-0${ c }${ selectedLang }` }
-              idx={ `${ c }${ selectedLang }` }
-            />
-          )
+          !!content ?
+            <>
+              {
+                Object.entries(content).map(([key, value], c) =>
+                  <InputGroup
+                    label={ key }
+                    data={ value }
+                    key={ `igp-0${ c }${ selectedLang }` }
+                    idx={ `${ c }${ selectedLang }` }
+                  />
+                )
+              }
+              <div className='mt-3'>
+                <button className=' px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm text-sm font-medium focus:outline-none text-white bg-indigo-600'>Save</button>
+              </div>
+            </>
+          :
+              <div className='flex w-full h-full justify-center items-center'>
+                <p>Empty.</p>
+              </div>
         }
-      </div>
-      <div>
-        <button className=' bg-indigo-600 text-sm text-white font-medium px-5 py-2 rounded-md'>Save</button>
       </div>
     </div>
   );

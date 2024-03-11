@@ -1,8 +1,6 @@
 import Input from "./Input";
 
 export default function InputGroup({ label, data, indent = 0, idx }) {
-    // Generate a unique key for each input or group. 
-    // This key strategy considers the path within the data structure, ensuring uniqueness.
     const generateKey = (prefix, index) => `${prefix}-${indent}-${index}`;
 
     return (
@@ -36,21 +34,21 @@ export default function InputGroup({ label, data, indent = 0, idx }) {
                                             idx={generateKey(`i-obj-field`, `${_key}-${_c}`)}
                                         />
                                 ) :
-                                typeof value === 'string' ?
-                                    <Input
-                                        data={value}
-                                        key={generateKey(`i-in-field`, `${key}-${c}`)}
-                                        idx={generateKey(`i-in-field`, `${key}-${c}`)}
-                                    /> :
-                                    <div key={generateKey(`inv-in-field`, `${key}-${c}`)}>Invalid Value</div>
+                            typeof value === 'string' ?
+                                <Input
+                                    data={value}
+                                    label={ key }
+                                    key={generateKey(`i-in-field`, `${key}-${c}`)}
+                                    idx={generateKey(`i-in-field`, `${key}-${c}`)}
+                                /> :
+                                <div key={generateKey(`inv-in-field`, `${key}-${c}`)}>Invalid Value</div>
                     ) :
             typeof data === 'string' ?
                 <Input
                     data={data}
                     key={generateKey(`i-field`, `${idx}`)}
                     idx={generateKey(`i-field`, `${idx}`)}
-                />
-                :
+                /> :
                 <div key={generateKey(`inv-field`, `${idx}`)}>Invalid Value</div>
             }
         </div>

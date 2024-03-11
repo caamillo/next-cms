@@ -12,7 +12,7 @@ export default function Input({ label, data, idx }) {
   };
 
   return (
-    <div key={idx} className="flex gap-3 justify-center items-center pl-3">
+    <div key={idx} className="flex gap-3 justify-center items-center">
       {!!label && <p className="text-slate-500 font-medium text-sm min-w-fit">{label}</p>}
       <input
         type="text"

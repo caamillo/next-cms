@@ -5,7 +5,16 @@ import { promises as fsPromises } from 'fs'
 export const getRoot = async (source) => {
   const root = {}
   await traverseDirectory(source, root)
-  return root
+
+  let directoryName = source
+  if (directoryName.endsWith('/')) directoryName.slice(0, -1)
+  directoryName = directoryName.split('/').at(-1)
+
+  return {
+    [ directoryName ]: {
+      ...root
+    }
+  }
 };
 
 const traverseDirectory = async (source, parentObject) => {
@@ -26,15 +35,4 @@ const traverseDirectory = async (source, parentObject) => {
       }
     }
   }
-}
-
-const mergeLangs = (path) => {
-    const ext = Object.keys(path).filter(el => el.endsWith('.json'))
-    const data = {}
-
-    for (let lang of ext)
-        data[lang] = path[lang]
-    console.log(data)
-    
-    return [ ...Object.keys(path).filter(el => !el.endsWith('.json')), data ]
 }

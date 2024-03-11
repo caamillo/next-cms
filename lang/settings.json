@@ -1,7 +1,7 @@
 {
     "default": "it",
     "flags": {
-        "it": "it-IT",
-        "en": "en-EN"
+        "it": "Italian",
+        "en": "English"
     }
 }
