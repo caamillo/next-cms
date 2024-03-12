@@ -1,9 +1,63 @@
 import Input from "./Input";
 import Image from "next/image";
 import plus from '@/assets/icons/plus.svg'
+import { useState } from "react";
 
-export default function InputGroup({ label, data, indent = 0, idx }) {
+const sortStringFirst = (data) => {
+    if (Array.isArray(data)) {
+        return data.sort((a, b) => {
+          const isAString = typeof a === 'string'
+          const isBString = typeof b === 'string'
+    
+          if (isAString && !isBString) return -1
+          else if (!isAString && isBString) return 1
+
+          return 0
+        })
+    } else if (typeof data === 'object' && data !== null) {
+        const sortedKeys = Object.keys(data).sort((a, b) => {
+            const isAString = typeof data[a] === 'string'
+            const isBString = typeof data[b] === 'string'
+
+            if (isAString && !isBString) return -1
+            else if (!isAString && isBString) return 1
+            return 0
+        })
+    
+        const sortedObject = {}
+        for (const key of sortedKeys) {
+            sortedObject[key] = data[key]
+        }
+
+        return sortedObject
+    }
+    
+    return null
+}
+
+export default function InputGroup({ label, data, indent = 0, idx, prev='', root, lang }) {
     const generateKey = (prefix, index) => `${prefix}-${indent}-${index}`;
+    const [ path, setPath ] = useState(`${ prev.length ? `${ prev }.` : '' }${ label }`)
+
+    const addRowHandler = () => {
+        console.log(root, path, lang)
+        fetch('/api/panel', {
+            method: 'POST',
+            body: JSON.stringify({
+                job: 'AddRow',
+                data: {
+                    'path': root,
+                    'inpath': path,
+                    'lang': lang,
+                    'data': {
+                        'test': 'test'
+                    }
+                }
+            })
+        })
+            .then(res => res.json())
+            .then(data => console.log(data))
+    }
 
     return (
         <div key={idx} className="space-y-3" style={{ paddingLeft: `${indent * 20}px` }}>
@@ -13,18 +67,21 @@ export default function InputGroup({ label, data, indent = 0, idx }) {
                         <p className="uppercase text-xs text-slate-600 font-bold tracking-wide">{label}</p>
                         {
                             Array.isArray(data) || typeof data === 'object' &&
-                                <Image
-                                    src={ plus }
-                                    width={ 13 }
-                                    height={ 13 }
-                                    className="bg-indigo-600 w-5 h-5 px-1 rounded-md cursor-pointer"
-                                />
+                                <div onClick={ addRowHandler } className="flex justify-center items-center bg-indigo-600 hover:bg-indigo-400 transition-colors px-2 py-1 gap-1 rounded-md cursor-pointer">
+                                    <Image
+                                        src={ plus }
+                                        width={ 15 }
+                                        height={ 15 }
+                                        alt={ 'plus' }
+                                    />
+                                    <p className="text-xs text-white font-bold">ADD</p>
+                                </div>
                         }
                     </div>
             }
             {
                 Array.isArray(data) || typeof data === 'object' ?
-                    Object.entries(data).map(([key, value], c) =>
+                    Object.entries(sortStringFirst(data)).map(([key, value], c) =>
                         Array.isArray(value) || typeof value === 'object' ?
                             <InputGroup
                                 label={key}
@@ -32,6 +89,9 @@ export default function InputGroup({ label, data, indent = 0, idx }) {
                                 indent={indent + 1}
                                 idx={generateKey(`igp-arr`, `${key}-${c}`)}
                                 key={generateKey(`igp-arr`, `${key}-${c}`)}
+                                prev={ path }
+                                root={ root }
+                                lang={ lang }
                             /> :
                             typeof value === 'object' ?
                             <Input

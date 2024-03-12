@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import InputGroup from './InputGroup';
 import settings from '@/lang/settings'
 
-export default function Editor({ directory, files, setIsModalOpen }) {
+export default function Editor({ directory, files, absolutePath, setIsModalOpen }) {
   const [selectedLang, setSelectedLang] = useState(`${ settings.default }.json`);
   const [content, setContent] = useState({});
 
@@ -56,6 +56,8 @@ export default function Editor({ directory, files, setIsModalOpen }) {
                     data={ value }
                     key={ `igp-0${ c }${ selectedLang }` }
                     idx={ `${ c }${ selectedLang }` }
+                    lang={ selectedLang }
+                    root={ absolutePath }
                   />
                 )
               }

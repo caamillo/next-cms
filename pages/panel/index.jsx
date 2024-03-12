@@ -11,10 +11,14 @@ export default function Panel({ directories }) {
   const [selectedPage, setSelectedPage] = useState(Object.keys(scopeDirs)[0]) // Util for sidebar to highlight current page
   const [path, setPath] = useState(scopeDirs[selectedPage]) // Handle the state of current file we are watching
   const [ isModalOpen, setIsModalOpen ] = useState(false)
+  const [ absolutePath, setAbsolutePath ] = useState(`pages/${ selectedPage }`)
 
   useEffect(() => {
     if (!selectedPage) return
     setPath(scopeDirs[selectedPage])
+    setAbsolutePath(abs =>
+        abs.split('/').slice(0, -1).join('/') + `/${ selectedPage }`
+      )
   }, [ selectedPage ])
 
   const handlePageSelect = (page) => {
@@ -31,6 +35,7 @@ export default function Panel({ directories }) {
           _back: { [dirName]: { ...scope } }
         }
     })
+    setAbsolutePath(abs => `${ abs }/${ sub }`)
     setDirName(head)
     setSelectedPage(sub)
   }
@@ -44,6 +49,9 @@ export default function Panel({ directories }) {
       setSelectedPage(firstPage)
       setPath(dir[firstPage])
       setDirName(directoryName)
+      setAbsolutePath(abs =>
+          abs.split('/').slice(0, -2).join('/') + `/${ firstPage }`
+        )
 
       return dir
     })
@@ -85,6 +93,7 @@ export default function Panel({ directories }) {
             directory={selectedPage}
             files={ path }
             setIsModalOpen={ setIsModalOpen }
+            absolutePath={ absolutePath }
           />
         )}
       </div>
