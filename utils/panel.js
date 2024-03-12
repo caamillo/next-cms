@@ -69,7 +69,7 @@ export const AddRow = async (path, lang, value, inpath) => {
   updateChildren(root[lang], parsedPath, value)
   await writeFile(`${ entirePath }/${ lang }`, JSON.stringify(root[lang], null, 3))
 
-  return true
+  return root[lang]
 }
 
 export const UpdateRow = async (path, lang, value, inpath) => {
@@ -81,8 +81,7 @@ export const UpdateRow = async (path, lang, value, inpath) => {
 
   const parsedPath = inpath.split('.').filter(el => el)
   editField(root[lang], parsedPath, value)
-  console.log(root[lang])
-  // await writeFile(`${ entirePath }/${ lang }`, JSON.stringify(root[lang], null, 3))
+  await writeFile(`${ entirePath }/${ lang }`, JSON.stringify(root[lang], null, 3))
 
-  return true
+  return root[lang]
 }

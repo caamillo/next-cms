@@ -32,11 +32,9 @@ export default async function handler(req, res) {
         }
 
         const { job, data } = dataParse
-        const status = await handleJob(job, data)
+        const root = await handleJob(job, data)
 
-        if (status) res.status(200).json({
-            message: 'Done!'
-        })
+        if (root) res.status(200).json(root)
 
         else res.status(500).json({
             message: 'Something went wrong...'

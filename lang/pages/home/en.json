@@ -1,9 +1,3 @@
 {
-   "message": "Hello World",
-   "ops": {
-      "lorem": {
-         "ipsum": "yes"
-      },
-      "test": "test"
-   }
+   "message": "Hello World"
 }

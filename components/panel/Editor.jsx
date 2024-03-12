@@ -1,23 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import InputGroup from './InputGroup';
 import settings from '@/lang/settings'
-
-const updateField = (path, lang, row, data) => {
-  fetch('/api/panel', {
-      method: 'POST',
-      body: JSON.stringify({
-          job: 'UpdateRow',
-          data: {
-              'path': path,
-              'inpath': row,
-              'lang': lang,
-              'data': data
-          }
-      })
-  })
-      .then(res => res.json())
-      .then(data => console.log(data))
-}
+import Image from 'next/image'
+import loading from '@/assets/icons/loading.svg'
 
 const filterFiles = (files) =>
   Object.fromEntries(
@@ -29,10 +14,12 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
   const [selectedLang, setSelectedLang] = useState(Object.keys(filterFiles(files))[0]);
   const [content, setContent] = useState({})
   const [ updates, setUpdates ] = useState({})
+  const [ isSaving, setIsSaving ] = useState(false)
   const saveRef = useRef()
 
   useEffect(() => {
     if (Object.keys(updates).length > 0) saveRef.current.disabled = false
+    console.log(updates)
   }, [ updates ])
 
   useEffect(() => {
@@ -44,8 +31,26 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
     setContent(files[selectedLang])
   }, [ selectedLang, files ])
 
+  const updateField = async (path, lang, row, data) => {
+    const res = await fetch('/api/panel', {
+        method: 'POST',
+        body: JSON.stringify({
+            job: 'UpdateRow',
+            data: {
+                'path': path,
+                'inpath': row,
+                'lang': lang,
+                'data': data
+            }
+        })
+    })
+    if (!res.ok) return console.error('Error')
+    setContent(await res.json())
+    saveRef.current.disabled = true
+  }
 
   const save = async () => {
+    setIsSaving(true)
     if (saveRef.current.disabled) return
     for (let path of Object.keys(updates)) {
       console.log(path)
@@ -59,6 +64,7 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
         }
       }
     }
+    setIsSaving(false)
   }
 
   return (
@@ -88,11 +94,26 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
                     lang={ selectedLang }
                     root={ absolutePath }
                     setUpdates={ setUpdates }
+                    setContent={ setContent }
                   />
                 )
               }
               <div onClick={ save } className='mt-3 w-fit'>
-                <button ref={ saveRef } disabled className='px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm disabled:bg-indigo-600/50 text-sm font-medium focus:outline-none text-white bg-indigo-600'>Save</button>
+                <button ref={ saveRef } disabled className='px-4 py-2 border border-transparent flex flex-col justify-center items-center rounded-md transition-colors ease-in-out shadow-sm disabled:bg-indigo-600/50 text-sm font-medium focus:outline-none text-white bg-indigo-600'>
+                  <div className='w-[30px]'>
+                    {
+                      !isSaving ?
+                        <p>Save</p> :
+                        <Image
+                            src={ loading }
+                            width={ 20 }
+                            height={ 20 }
+                            className='spin-anim w-[30px] h-[20px]'
+                            alt={ 'loading' }
+                        />
+                    }
+                  </div>
+                </button>
               </div>
             </>
           :

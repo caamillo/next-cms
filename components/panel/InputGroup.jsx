@@ -35,16 +35,15 @@ const sortStringFirst = (data) => {
     return null
 }
 
-export default function InputGroup({ label, data, indent = 0, idx, prev='', root, lang, setUpdates }) {
+export default function InputGroup({ label, data, indent = 0, idx, prev='', root, lang, setUpdates, setContent }) {
     const generateKey = (prefix, index) => `${prefix}-${indent}-${index}`;
     const [ path, setPath ] = useState(`${ prev.length ? `${ prev }.` : '' }${ label }`)
     useEffect(() => {
         setPath(`${ prev.length ? `${ prev }.` : '' }${ label }`)
       }, [prev, label])
 
-    const addRowHandler = () => {
-        console.log(root, path, lang)
-        fetch('/api/panel', {
+    const addRowHandler = async () => {
+        const res = await fetch('/api/panel', {
             method: 'POST',
             body: JSON.stringify({
                 job: 'AddRow',
@@ -58,8 +57,8 @@ export default function InputGroup({ label, data, indent = 0, idx, prev='', root
                 }
             })
         })
-            .then(res => res.json())
-            .then(data => console.log(data))
+        if (!res.ok) return console.error('Error')
+        setContent(await res.json())
     }
 
     return (
@@ -96,6 +95,7 @@ export default function InputGroup({ label, data, indent = 0, idx, prev='', root
                                 root={ root }
                                 lang={ lang }
                                 setUpdates={ setUpdates }
+                                setContent={ setContent }
                             /> :
                             typeof value === 'object' ?
                             <Input

@@ -12,7 +12,7 @@ export default function Input({ label, data, idx, path, rpath, lang, setUpdates 
     setUpdates(updates => {
       updates[path] = updates[path] ?? {}
       updates[path][lang] = updates[path][lang] ?? {}
-      updates[path][lang][rpath] = e.target.value
+      updates[path][lang][`${ rpath }${ label ? '.' + label : '' }`] = e.target.value
       return {
         ...updates
       }
