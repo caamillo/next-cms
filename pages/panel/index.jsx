@@ -2,6 +2,7 @@ import { getRoot } from '@/utils/panel';
 import { useEffect, useState } from 'react';
 import Editor from '@/components/panel/Editor';
 import Accordion from '@/components/panel/Accordion';
+import Modal from '@/components/panel/modals';
 
 export default function Panel({ directories }) {
   
@@ -9,6 +10,7 @@ export default function Panel({ directories }) {
   const [scopeDirs, setScopeDirs] = useState(directories[dirName]) // Focuser of dirs
   const [selectedPage, setSelectedPage] = useState(Object.keys(scopeDirs)[0]) // Util for sidebar to highlight current page
   const [path, setPath] = useState(scopeDirs[selectedPage]) // Handle the state of current file we are watching
+  const [ isModalOpen, setIsModalOpen ] = useState(false)
 
   useEffect(() => {
     if (!selectedPage) return
@@ -20,12 +22,10 @@ export default function Panel({ directories }) {
   };
 
   const handleSide = (head, sub) => {
-    console.log(head, sub, path)
     setPath(path => {
       return path[sub]
     })
     setScopeDirs(scope => {
-      console.log(scope)
         return {
           ...scope[head],
           _back: { [dirName]: { ...scope } }
@@ -51,6 +51,7 @@ export default function Panel({ directories }) {
 
   return (
     <div className="w-screen h-screen flex">
+      <Modal isOpen={ isModalOpen } >ciao</Modal>
       <div className="w-[20%] min-w-[300px] p-5 bg-slate-100 border-r">
         <div className='flex flex-col h-full justify-between'>
           <div>
@@ -83,6 +84,7 @@ export default function Panel({ directories }) {
           <Editor
             directory={selectedPage}
             files={ path }
+            setIsModalOpen={ setIsModalOpen }
           />
         )}
       </div>
@@ -92,7 +94,6 @@ export default function Panel({ directories }) {
 
 export async function getServerSideProps(context) {
   const root = await getRoot('./lang/pages')
-  console.log(root)
   return {
       props: { directories: root }
   }

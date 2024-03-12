@@ -16,7 +16,7 @@ export default function Accordion({ title, data, cb, isActive, handleSide }) {
 
     return (
         <div className='w-full cursor-pointer'>
-            <button onClick={ () => cb(title) } className={`text-lg px-4 py-2 w-full text-left capitalize transition-colors duration-200 ease-in-out flex justify-between ${ isActive ? dirs.length > 0 ? 'bg-slate-300 rounded-tl-md rounded-tr-md' : 'bg-slate-300 rounded-md' : 'hover:bg-slate-200 rounded-md'}`}>
+            <button onClick={ () => cb(title) } className={`text-lg px-4 py-2 w-full text-left capitalize transition-colors duration-200 ease-in-out flex justify-between ${ isActive ? dirs.length > 0 ? 'bg-slate-300 rounded-tl-md rounded-tr-md font-semibold' : 'bg-slate-300 rounded-md font-semibold' : 'hover:bg-slate-200 rounded-md'}`}>
                 <p>{ title }</p>
                 { dirs.length > 0 && <Image className={`transition-transform duration-300 ease-in-out ${ isOpen ? 'rotate-180' : '' }`} src={ Expand } width={ 30 } height={ 30 } alt='expand' /> }
             </button>

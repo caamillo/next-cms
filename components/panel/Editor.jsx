@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import InputGroup from './InputGroup';
 import settings from '@/lang/settings'
 
-export default function Editor({ directory, files, onContentChange }) {
+export default function Editor({ directory, files, setIsModalOpen }) {
   const [selectedLang, setSelectedLang] = useState(`${ settings.default }.json`);
   const [content, setContent] = useState({});
 
@@ -60,7 +60,7 @@ export default function Editor({ directory, files, onContentChange }) {
                 )
               }
               <div className='mt-3'>
-                <button className=' px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm text-sm font-medium focus:outline-none text-white bg-indigo-600'>Save</button>
+                <button onClick={ () => setIsModalOpen(true) } className='px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm text-sm font-medium focus:outline-none text-white bg-indigo-600'>Save</button>
               </div>
             </>
           :
