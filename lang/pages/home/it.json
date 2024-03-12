@@ -2,7 +2,9 @@
    "message": "Ciao Mondo",
    "chi": {
       "lo": {
-         "sa": "tu"
-      }
+         "sa": "tu",
+         "test": "test"
+      },
+      "test": "test"
    }
 }

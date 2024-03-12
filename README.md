@@ -1,6 +1,8 @@
 ## Basic
-[x] Add Row Functionality
-[] Fix AddRow (doesnt work for multilangs... fix some refs prob)
+- [x] Add Row Functionality
+- [ ] Delete Row Functionality
+- [ ] Fix if default lang not found, not showing anything
+- [x] Fix AddRow (doesnt work for multilangs... fix some refs prob)
 
 
 ## Advanced

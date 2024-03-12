@@ -1,7 +1,7 @@
 import Input from "./Input";
 import Image from "next/image";
 import plus from '@/assets/icons/plus.svg'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const sortStringFirst = (data) => {
     if (Array.isArray(data)) {
@@ -38,6 +38,9 @@ const sortStringFirst = (data) => {
 export default function InputGroup({ label, data, indent = 0, idx, prev='', root, lang }) {
     const generateKey = (prefix, index) => `${prefix}-${indent}-${index}`;
     const [ path, setPath ] = useState(`${ prev.length ? `${ prev }.` : '' }${ label }`)
+    useEffect(() => {
+        setPath(`${ prev.length ? `${ prev }.` : '' }${ label }`)
+      }, [prev, label])
 
     const addRowHandler = () => {
         console.log(root, path, lang)
@@ -67,7 +70,7 @@ export default function InputGroup({ label, data, indent = 0, idx, prev='', root
                         <p className="uppercase text-xs text-slate-600 font-bold tracking-wide">{label}</p>
                         {
                             Array.isArray(data) || typeof data === 'object' &&
-                                <div onClick={ addRowHandler } className="flex justify-center items-center bg-indigo-600 hover:bg-indigo-400 transition-colors px-2 py-1 gap-1 rounded-md cursor-pointer">
+                                <div key={ generateKey('add-row', `${ label }-${ idx }`) } onClick={ addRowHandler } className="flex justify-center items-center bg-indigo-600 hover:bg-indigo-400 transition-colors px-2 py-1 gap-1 rounded-md cursor-pointer">
                                     <Image
                                         src={ plus }
                                         width={ 15 }
