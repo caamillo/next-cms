@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Input({ label, data, idx }) {
+export default function Input({ label, data, idx, path, rpath, lang, setUpdates }) {
   const [inputValue, setInputValue] = useState(data);
 
   useEffect(() => {
     setInputValue(data);
-  }, [data]);
+  }, [ data ]);
 
-  const handleChange = (event) => {
-    setInputValue(event.target.value);
-  };
+  const handleChange = (e) => {
+    setInputValue(e.target.value)
+    setUpdates(updates => {
+      updates[path] = updates[path] ?? {}
+      updates[path][lang] = updates[path][lang] ?? {}
+      updates[path][lang][rpath] = e.target.value
+      return {
+        ...updates
+      }
+    })
+  }
 
   return (
-    <div key={idx} className="flex gap-3 justify-center items-center">
+    <div key={ idx } className="flex gap-3 justify-center items-center">
       {!!label &&
-        <p className="text-slate-500 font-medium w-[100px] text-sm break-all">{label}</p>
+        <p className="text-slate-500 font-medium w-[100px] text-sm break-all">{ label }</p>
       }
       <input
         type="text"

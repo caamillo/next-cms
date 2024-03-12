@@ -35,7 +35,7 @@ const sortStringFirst = (data) => {
     return null
 }
 
-export default function InputGroup({ label, data, indent = 0, idx, prev='', root, lang }) {
+export default function InputGroup({ label, data, indent = 0, idx, prev='', root, lang, setUpdates }) {
     const generateKey = (prefix, index) => `${prefix}-${indent}-${index}`;
     const [ path, setPath ] = useState(`${ prev.length ? `${ prev }.` : '' }${ label }`)
     useEffect(() => {
@@ -95,11 +95,16 @@ export default function InputGroup({ label, data, indent = 0, idx, prev='', root
                                 prev={ path }
                                 root={ root }
                                 lang={ lang }
+                                setUpdates={ setUpdates }
                             /> :
                             typeof value === 'object' ?
                             <Input
                                 label={_key}
                                 data={_value}
+                                path={ root }
+                                rpath={ path }
+                                lang={ lang }
+                                setUpdates={ setUpdates }
                                 key={generateKey(`i-obj-field`, `${_key}-${_c}`)}
                                 idx={generateKey(`i-obj-field`, `${_key}-${_c}`)}
                             /> :
@@ -107,6 +112,10 @@ export default function InputGroup({ label, data, indent = 0, idx, prev='', root
                                 <Input
                                     data={value}
                                     label={ key }
+                                    path={ root }
+                                    rpath={ path }
+                                    lang={ lang }
+                                    setUpdates={ setUpdates }
                                     key={generateKey(`i-in-field`, `${key}-${c}`)}
                                     idx={generateKey(`i-in-field`, `${key}-${c}`)}
                                 /> :
@@ -115,6 +124,10 @@ export default function InputGroup({ label, data, indent = 0, idx, prev='', root
             typeof data === 'string' ?
                 <Input
                     data={data}
+                    path={ root }
+                    rpath={ path }
+                    lang={ lang }
+                    setUpdates={ setUpdates }
                     key={generateKey(`i-field`, `${idx}`)}
                     idx={generateKey(`i-field`, `${idx}`)}
                 /> :

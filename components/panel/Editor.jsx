@@ -1,37 +1,60 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import InputGroup from './InputGroup';
 import settings from '@/lang/settings'
 
+const updateField = (path, lang, row, data) => {
+  fetch('/api/panel', {
+      method: 'POST',
+      body: JSON.stringify({
+          job: 'UpdateRow',
+          data: {
+              'path': path,
+              'inpath': row,
+              'lang': lang,
+              'data': data
+          }
+      })
+  })
+      .then(res => res.json())
+      .then(data => console.log(data))
+}
+
 export default function Editor({ directory, files, absolutePath, setIsModalOpen }) {
-  const [selectedLang, setSelectedLang] = useState(`${ settings.default }.json`);
-  const [content, setContent] = useState({});
+  const [selectedLang, setSelectedLang] = useState(Object.keys(files)[0]);
+  const [content, setContent] = useState({})
+  const [ updates, setUpdates ] = useState({})
+  const saveRef = useRef()
 
-  // Parse the file content when the selected language changes
   useEffect(() => {
+    if (Object.keys(updates).length > 0) saveRef.current.disabled = false
+  }, [ updates ])
+
+  useEffect(() => {
+    setSelectedLang(Object.keys(files)[0])
+  }, [ files ])
+
+  useEffect(() => {
+    setUpdates({}) // Wipe Updates
     setContent(files[selectedLang])
-  }, [selectedLang, files]);
+  }, [ selectedLang, files ])
 
-  // Update the content state when an attribute changes
-  const handleAttributeChange = (attributeKey, newValue) => {
-    let updatedContent = { ...content };
-    // Support nested updates
-    function updatePath(path, value, obj) {
-      let parts = path.split('.');
-      let last = parts.pop();
-      let ref = obj;
-      parts.forEach((part) => {
-        if (!ref[part]) ref[part] = {};
-        ref = ref[part];
-      });
-      ref[last] = value;
+
+  const save = async () => {
+    if (saveRef.current.disabled) return
+    for (let path of Object.keys(updates)) {
+      console.log(path)
+      for (let lang of Object.keys(updates[path])) {
+        console.log(lang)
+        for (let row of Object.keys(updates[path][lang])) {
+          const data = updates[path][lang][row]
+          console.log(row)
+          console.log(data)
+          await updateField(path, lang, row, data)
+        }
+      }
     }
+  }
 
-    updatePath(attributeKey, newValue, updatedContent);
-    setContent(updatedContent);
-    onContentChange(directory, selectedLang, JSON.stringify(updatedContent, null, 2));
-  };
-
-  // Render the UI for language file editing
   return (
     <div className='space-y-5'>
       <div className='flex gap-3'>
@@ -41,7 +64,7 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
                 className={`px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm text-sm font-medium focus:outline-none ${lang === selectedLang ? 'bg-indigo-600 text-white' : 'bg-white text-slate-800 hover:bg-slate-200'}`}
                 onClick={ () => setSelectedLang(lang) }
             >
-            { settings.flags[lang.replace('.json', '')] }
+            { settings.flags[lang.replace('.json', '')] ?? lang.replace('.json', '') }
         </button>
         ))}
       </div>
@@ -58,11 +81,12 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
                     idx={ `${ c }${ selectedLang }` }
                     lang={ selectedLang }
                     root={ absolutePath }
+                    setUpdates={ setUpdates }
                   />
                 )
               }
-              <div className='mt-3'>
-                <button onClick={ () => setIsModalOpen(true) } className='px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm text-sm font-medium focus:outline-none text-white bg-indigo-600'>Save</button>
+              <div onClick={ save } className='mt-3 w-fit'>
+                <button ref={ saveRef } disabled className='px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm disabled:bg-indigo-600/50 text-sm font-medium focus:outline-none text-white bg-indigo-600'>Save</button>
               </div>
             </>
           :

@@ -49,6 +49,15 @@ function updateChildren(content, keys, values, iteration=0) {
   }
 }
 
+const editField = (content, keys, val, iteration=0) => {
+  for (let [key, value] of Object.entries(content)) {
+    if (key === keys[iteration]) {
+      if (typeof value === 'object' && iteration < keys.length - 1) editField(content[key], keys, val, iteration + 1);
+      else content[key] = val
+    }
+  }
+}
+
 export const AddRow = async (path, lang, value, inpath) => {
   const langFolder = './lang/'
   if (path.startsWith('/')) path = path.slice(1)
@@ -59,6 +68,21 @@ export const AddRow = async (path, lang, value, inpath) => {
   const parsedPath = inpath.split('.').filter(el => el)
   updateChildren(root[lang], parsedPath, value)
   await writeFile(`${ entirePath }/${ lang }`, JSON.stringify(root[lang], null, 3))
+
+  return true
+}
+
+export const UpdateRow = async (path, lang, value, inpath) => {
+  const langFolder = './lang/'
+  if (path.startsWith('/')) path = path.slice(1)
+  const entirePath = `${ langFolder }${ path }`
+
+  const root = await getRoot(entirePath, false)
+
+  const parsedPath = inpath.split('.').filter(el => el)
+  editField(root[lang], parsedPath, value)
+  console.log(root[lang])
+  // await writeFile(`${ entirePath }/${ lang }`, JSON.stringify(root[lang], null, 3))
 
   return true
 }
