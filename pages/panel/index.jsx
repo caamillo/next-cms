@@ -4,18 +4,23 @@ import Editor from '@/components/panel/Editor';
 import Accordion from '@/components/panel/Accordion';
 import Modal from '@/components/panel/modals';
 
+const filterDirs = (dirs) =>
+  Object.fromEntries(
+    Object.entries(dirs).filter(([ dir ]) => !dir.endsWith('.json'))
+  )
+
 export default function Panel({ directories }) {
   
   const [dirName, setDirName] = useState(Object.keys(directories)[0])
   const [scopeDirs, setScopeDirs] = useState(directories[dirName]) // Focuser of dirs
   const [selectedPage, setSelectedPage] = useState(Object.keys(scopeDirs)[0]) // Util for sidebar to highlight current page
-  const [path, setPath] = useState(scopeDirs[selectedPage]) // Handle the state of current file we are watching
+  const [files, setFiles] = useState(scopeDirs[selectedPage]) // Handle the state of current file we are watching
   const [ isModalOpen, setIsModalOpen ] = useState(false)
   const [ absolutePath, setAbsolutePath ] = useState(`pages/${ selectedPage }`)
 
   useEffect(() => {
     if (!selectedPage) return
-    setPath(scopeDirs[selectedPage])
+    setFiles(scopeDirs[selectedPage])
     setAbsolutePath(abs =>
         abs.split('/').slice(0, -1).join('/') + `/${ selectedPage }`
       )
@@ -26,8 +31,8 @@ export default function Panel({ directories }) {
   };
 
   const handleSide = (head, sub) => {
-    setPath(path => {
-      return path[sub]
+    setFiles(files => {
+      return files[sub]
     })
     setScopeDirs(scope => {
         return {
@@ -47,7 +52,7 @@ export default function Panel({ directories }) {
 
       const firstPage = Object.keys(dir)[0]
       setSelectedPage(firstPage)
-      setPath(dir[firstPage])
+      setFiles(dir[firstPage])
       setDirName(directoryName)
       setAbsolutePath(abs =>
           abs.split('/').slice(0, -2).join('/') + `/${ firstPage }`
@@ -65,7 +70,7 @@ export default function Panel({ directories }) {
           <div>
             <p className='text-2xl font-semibold mb-5 text-slate-800 capitalize'>{ dirName }:</p>
             <div className='space-y-2'>
-              {Object.keys(scopeDirs).filter(el => el !== '_back').map((directory, c) => (
+              {Object.keys(filterDirs(scopeDirs)).filter(el => el !== '_back').map((directory, c) => (
                 <Accordion
                   key={ directory + c }
                   title={ directory }
@@ -91,7 +96,7 @@ export default function Panel({ directories }) {
         { selectedPage && (
           <Editor
             directory={selectedPage}
-            files={ path }
+            files={ files }
             setIsModalOpen={ setIsModalOpen }
             absolutePath={ absolutePath }
           />

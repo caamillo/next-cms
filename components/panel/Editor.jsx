@@ -19,8 +19,14 @@ const updateField = (path, lang, row, data) => {
       .then(data => console.log(data))
 }
 
+const filterFiles = (files) =>
+  Object.fromEntries(
+    Object.entries(files).filter(([ file ]) => file.endsWith('.json'))
+  )
+
+
 export default function Editor({ directory, files, absolutePath, setIsModalOpen }) {
-  const [selectedLang, setSelectedLang] = useState(Object.keys(files)[0]);
+  const [selectedLang, setSelectedLang] = useState(Object.keys(filterFiles(files))[0]);
   const [content, setContent] = useState({})
   const [ updates, setUpdates ] = useState({})
   const saveRef = useRef()
@@ -30,7 +36,7 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
   }, [ updates ])
 
   useEffect(() => {
-    setSelectedLang(Object.keys(files)[0])
+    setSelectedLang(Object.keys(filterFiles(files))[0])
   }, [ files ])
 
   useEffect(() => {
@@ -58,7 +64,7 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
   return (
     <div className='space-y-5'>
       <div className='flex gap-3'>
-        { !!content && Object.keys(files).map((lang) => (
+        { !!content && Object.keys(filterFiles(files)).map((lang) => (
             <button
                 key={ `btn-${ lang }` }
                 className={`px-4 py-2 border border-transparent rounded-md transition-colors ease-in-out shadow-sm text-sm font-medium focus:outline-none ${lang === selectedLang ? 'bg-indigo-600 text-white' : 'bg-white text-slate-800 hover:bg-slate-200'}`}
