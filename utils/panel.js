@@ -59,11 +59,19 @@ const editField = (content, keys, val, iteration=0) => {
 }
 
 const removeField = (content, keys, iteration=0) => {
+  let c = 0
   for (let [key, value] of Object.entries(content)) {
     if (key === keys[iteration]) {
       if (typeof value === 'object' && iteration < keys.length - 1) removeField(content[key], keys, iteration + 1);
-      else delete content[key]
+      else {
+        if (Array.isArray(content)) content.splice(c, 1)
+        else if (typeof content === 'object') {
+          delete content[key]
+        }
+        return
+      }
     }
+    c += 1
   }
 }
 
