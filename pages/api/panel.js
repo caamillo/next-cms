@@ -1,5 +1,5 @@
 import { isProduction } from "@/utils/global"
-import { AddRow, UpdateRow } from "@/utils/panel"
+import { AddRow, UpdateRow, DeleteRow } from "@/utils/panel"
 
 const handleJob = async (job, data) => {
     const path = data?.path
@@ -14,6 +14,8 @@ const handleJob = async (job, data) => {
             return await AddRow(path, lang, value, inpath)
         case 'UpdateRow':
             return await UpdateRow(path, lang, value, inpath)
+        case 'DeleteRow':
+            return await DeleteRow(path, lang, inpath)
     }
 
     return false

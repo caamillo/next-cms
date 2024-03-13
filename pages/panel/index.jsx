@@ -2,12 +2,26 @@ import { getRoot } from '@/utils/panel';
 import { useEffect, useState } from 'react';
 import Editor from '@/components/panel/Editor';
 import Accordion from '@/components/panel/Accordion';
-import Modal from '@/components/panel/modals';
+import Modal from '@/components/panel/modals'
+import DeleteModal from '@/components/panel/modals/DeleteModal';
 
 const filterDirs = (dirs) =>
   Object.fromEntries(
     Object.entries(dirs).filter(([ dir ]) => !dir.endsWith('.json'))
   )
+
+const doesFieldExists = (source, keys, iteration=0) => {
+    for (let [key, value] of Object.entries(source)) {
+        if (key === keys[iteration]) {
+            if (iteration < keys.length - 1) return doesFieldExists(source[key], keys, iteration + 1)
+            else return true
+        }
+    }
+    return false
+}
+
+const isValidField = (files, lang, keys) =>
+    doesFieldExists(files[lang], keys.split('.'))
 
 export default function Panel({ directories }) {
   
@@ -15,8 +29,24 @@ export default function Panel({ directories }) {
   const [scopeDirs, setScopeDirs] = useState(directories[dirName]) // Focuser of dirs
   const [selectedPage, setSelectedPage] = useState(Object.keys(scopeDirs)[0]) // Util for sidebar to highlight current page
   const [files, setFiles] = useState(scopeDirs[selectedPage]) // Handle the state of current file we are watching
+  const [ lang, setLang ] = useState()
   const [ isModalOpen, setIsModalOpen ] = useState(false)
+  const [ toDelete, setToDelete ] = useState()
+  const [ victim, setVictim ] = useState()
   const [ absolutePath, setAbsolutePath ] = useState(`pages/${ selectedPage }`)
+  const [ content, setContent ] = useState({})
+
+  useEffect(() => {
+    if (!files || !lang || !toDelete) return
+    console.log(files[lang], toDelete.split('.'))
+    if (isValidField(files, lang, toDelete)) setVictim(toDelete)
+  }, [ toDelete, lang, files ])
+
+  useEffect(() => {
+    if (victim) return setIsModalOpen(true)
+    setIsModalOpen(false)
+    setToDelete()
+  }, [ victim ])
 
   useEffect(() => {
     if (!selectedPage) return
@@ -64,7 +94,12 @@ export default function Panel({ directories }) {
 
   return (
     <div className="w-screen h-screen flex">
-      <Modal isOpen={ isModalOpen } >ciao</Modal>
+      <Modal isOpen={ isModalOpen } >
+        {
+          victim &&
+          <DeleteModal victim={ victim } setVictim={ setVictim } path={ absolutePath } lang={ lang } setContent={ setContent } />
+        }
+      </Modal>
       <div className="w-[20%] min-w-[300px] p-5 bg-slate-100 border-r">
         <div className='flex flex-col h-full justify-between'>
           <div>
@@ -97,8 +132,11 @@ export default function Panel({ directories }) {
           <Editor
             directory={selectedPage}
             files={ files }
-            setIsModalOpen={ setIsModalOpen }
+            setToDelete={ setToDelete }
             absolutePath={ absolutePath }
+            setLang={ setLang }
+            content={ content }
+            setContent={ setContent }
           />
         )}
       </div>

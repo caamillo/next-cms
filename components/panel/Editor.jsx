@@ -10,16 +10,14 @@ const filterFiles = (files) =>
   )
 
 
-export default function Editor({ directory, files, absolutePath, setIsModalOpen }) {
+export default function Editor({ directory, files, absolutePath, setToDelete, setLang, content, setContent }) {
   const [selectedLang, setSelectedLang] = useState(Object.keys(filterFiles(files))[0]);
-  const [content, setContent] = useState({})
   const [ updates, setUpdates ] = useState({})
   const [ isSaving, setIsSaving ] = useState(false)
   const saveRef = useRef()
 
   useEffect(() => {
     if (Object.keys(updates).length > 0) saveRef.current.disabled = false
-    console.log(updates)
   }, [ updates ])
 
   useEffect(() => {
@@ -28,6 +26,7 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
 
   useEffect(() => {
     setUpdates({}) // Wipe Updates
+    setLang(selectedLang)
     setContent(files[selectedLang])
   }, [ selectedLang, files ])
 
@@ -95,6 +94,7 @@ export default function Editor({ directory, files, absolutePath, setIsModalOpen 
                     root={ absolutePath }
                     setUpdates={ setUpdates }
                     setContent={ setContent }
+                    setToDelete={ setToDelete }
                   />
                 )
               }

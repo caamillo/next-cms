@@ -58,6 +58,15 @@ const editField = (content, keys, val, iteration=0) => {
   }
 }
 
+const removeField = (content, keys, iteration=0) => {
+  for (let [key, value] of Object.entries(content)) {
+    if (key === keys[iteration]) {
+      if (typeof value === 'object' && iteration < keys.length - 1) removeField(content[key], keys, iteration + 1);
+      else delete content[key]
+    }
+  }
+}
+
 export const AddRow = async (path, lang, value, inpath) => {
   const langFolder = './lang/'
   if (path.startsWith('/')) path = path.slice(1)
@@ -81,6 +90,19 @@ export const UpdateRow = async (path, lang, value, inpath) => {
 
   const parsedPath = inpath.split('.').filter(el => el)
   editField(root[lang], parsedPath, value)
+  await writeFile(`${ entirePath }/${ lang }`, JSON.stringify(root[lang], null, 3))
+
+  return root[lang]
+}
+
+export const DeleteRow = async (path, lang, inpath) => {
+  const langFolder = './lang/'
+  if (path.startsWith('/')) path = path.slice(1)
+  const entirePath = `${ langFolder }${ path }`
+
+  const root = await getRoot(entirePath, false)
+  const parsedPath = inpath.split('.').filter(el => el)
+  removeField(root[lang], parsedPath)
   await writeFile(`${ entirePath }/${ lang }`, JSON.stringify(root[lang], null, 3))
 
   return root[lang]
