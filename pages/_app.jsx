@@ -9,11 +9,11 @@ const Debugger = isDevelopment() ? dynamic(() =>
   import("@/components/debugger")
 ) : () => null
 
-export default function MyApp({ Component, pageProps, localizedContent }) {
+export default function MyApp({ Component, pageProps, localizedContent, route, locale }) {
   return (
     <MainContextProvider localizedContent={ localizedContent }>
       <Component { ...pageProps } />
-      <Debugger />
+      <Debugger route={ route } locale={ locale } />
     </MainContextProvider>
   )
 }
@@ -34,6 +34,8 @@ MyApp.getInitialProps = async (appContext) => {
 
   return {
     ...props,
-    localizedContent
+    localizedContent,
+    route,
+    locale
   }
 }

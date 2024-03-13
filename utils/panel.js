@@ -93,10 +93,10 @@ export const UpdateRow = async (path, lang, value, inpath) => {
   const langFolder = './lang/'
   if (path.startsWith('/')) path = path.slice(1)
   const entirePath = `${ langFolder }${ path }`
-
   const root = await getRoot(entirePath, false)
 
   const parsedPath = inpath.split('.').filter(el => el)
+  console.log('content', root[lang])
   editField(root[lang], parsedPath, value)
   await writeFile(`${ entirePath }/${ lang }`, JSON.stringify(root[lang], null, 3))
 
