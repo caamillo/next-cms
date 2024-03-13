@@ -26,14 +26,14 @@ export default function Input({ label, data, idx, path, rpath, lang, setUpdates,
       {!!label &&
         <p className="text-slate-500 font-medium w-[100px] text-sm break-all">{ label }</p>
       }
-      <div onClick={ () => setToDelete(`${ rpath }${ label ? '.' + label : '' }`) } className='w-full relative'>
+      <div className='w-full relative'>
         <input
           type="text"
           className="block min-w-[300px] w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           value={inputValue}
           onChange={handleChange}
         />
-        <div className='absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer rounded-md w-6 h-6 flex justify-center items-center bg-red-400 text-white'>
+        <div onClick={ () => setToDelete(`${ rpath }${ label ? '.' + label : '' }`) } className='absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer rounded-md w-6 h-6 flex justify-center items-center bg-red-400 text-white'>
           <Image
             width={ 16 }
             height={ 16 }

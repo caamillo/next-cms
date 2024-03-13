@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, createContext } from "react"
+import { useState, useEffect, createContext } from "react"
 import { Translate } from "@/lib/debugger"
 
 export const MainContext = createContext()
