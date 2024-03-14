@@ -2,17 +2,14 @@
 import { useState, useEffect, createContext } from "react"
 import { Translate } from "@/lib/debugger"
 
+let updates = {}
+
 export const MainContext = createContext()
 export const MainContextProvider = ({ children, localizedContent }) => {
-    const [ updates, setUpdates ] = useState({})
-    const translation = Translate(localizedContent, updates, setUpdates)
-
-    useEffect(() => {
-        console.log(updates)
-    }, [ updates ])
+    const translation = Translate(localizedContent, updates)
 
     return (
-        <MainContext.Provider value={{ translation, updates, setUpdates }}>
+        <MainContext.Provider value={{ translation, updates }}>
             { children }
         </MainContext.Provider>
     )

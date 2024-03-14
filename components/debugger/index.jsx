@@ -1,9 +1,16 @@
-import { useContext, useState, useEffect } from "react"
+import { useContext, useState, useEffect, useRef } from "react"
 import { MainContext } from "@/contexts/MainContext"
+import useUpdates from "@/hooks/useUpdates"
 
 export default function Debugger({ route, locale }) {
-    const { translation, updates, setUpdates } = useContext(MainContext)
+    const { translation } = useContext(MainContext)
     const [ toggle, setToggle ] = useState(translation.toggle)
+    const [ updates, setUpdates ] = useUpdates()
+
+    useEffect(() => {
+        if (!updates) return
+        console.log('updates', updates)
+    }, [ updates ])
 
     const save = async (row, data) => {
         const res = await fetch('/api/panel', {
@@ -31,16 +38,16 @@ export default function Debugger({ route, locale }) {
     }
 
     useEffect(() => {
-        if (toggle) {
-            translation.toggle = true
-            translation.loop()
-        } else translation.toggle = false
+        if (toggle === undefined) return
+
+        if (toggle) translation.start()
+        else translation.stop()
     }, [ toggle ])
 
     return (
         <div className="fixed bottom-3 right-3 space-y-4">
             {
-                toggle && Object.keys(updates).length > 0 &&
+                toggle && !!updates && Object.keys(updates).length > 0 &&
                     <div onClick={ saveAll } className="bg-indigo-600 w-12 h-12 font-bold text-white flex justify-center items-center cursor-pointer rounded-md text-xl">
                         S
                     </div>
