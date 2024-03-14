@@ -11,7 +11,7 @@ export default function useUpdates() {
     useEffect(() => {
         const t = setInterval(() => {
             const raw = localStorage.getItem('updates')
-            if (raw === JSON.stringify(updates)) return
+            if (raw == JSON.stringify(updates)) return
             const parsed = raw ? JSON.parse(raw) : {}
             setUpdates(parsed)
             // console.log(updates.current)

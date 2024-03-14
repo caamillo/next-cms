@@ -6,6 +6,10 @@
     animation: spin 1s infinite linear;
 }
 
+*:has(meta[data-modified="true"]) {
+    outline: 2px solid red;
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);

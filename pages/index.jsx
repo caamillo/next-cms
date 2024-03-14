@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="w-screen h-screen flex
     justify-center items-center font-bold text-slate-500 text-9xl">
-      { t('message') }
+      <p>{ t('message') }</p>
     </div>
   )
 }
